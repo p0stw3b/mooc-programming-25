@@ -3,11 +3,15 @@ const blue = require("@material-ui/core/colors/red").default
 
 const CourseSettings = require('./course-settings')
 
+const siteUrl = process.env.SITE_URL || CourseSettings.siteUrl
+const pathPrefix = process.env.PATH_PREFIX
+
 module.exports = {
   siteMetadata: {
     title: CourseSettings.name,
-    siteUrl: CourseSettings.siteUrl,
+    siteUrl,
   },
+  ...(pathPrefix ? { pathPrefix } : {}),
   plugins: [
     "gatsby-plugin-react-helmet",
     "gatsby-plugin-styled-components",
