@@ -6,6 +6,7 @@ import { Link } from "gatsby"
 import withSimpleErrorBoundary from "../../util/withSimpleErrorBoundary"
 import ExerciseSummary from "../ExercisesInThisSection/ExerciseSummary"
 import { fetchQuizNames } from "../../services/quizzes"
+import { filterPagesByLanguage } from "../../util/paths"
 import {
   extractPartNumberFromPath,
   extractSubpartNumberFromPath,
@@ -60,8 +61,10 @@ class ExerciseList extends React.Component {
 
   async componentDidMount() {
     const value = this.context
+    const currentPath = value.current.frontmatter.path
+    const pages = filterPagesByLanguage(value.all, currentPath)
 
-    const overviewPages = value.all
+    const overviewPages = pages
       .filter((o) => o.overview && !o.hidden)
       .sort((a, b) => {
         let partA = extractPartNumberFromPath(a.path.toLowerCase())
@@ -70,7 +73,7 @@ class ExerciseList extends React.Component {
         return partA > partB ? 1 : partB > partA ? -1 : 0
       })
 
-    const exercisePages = value.all.filter((o) => o.exercises?.length > 0)
+    const exercisePages = pages.filter((o) => o.exercises?.length > 0)
 
     const quizIdToTitle = await fetchQuizNames()
     this.setState({ overviewPages, exercisePages, quizIdToTitle, render: true })

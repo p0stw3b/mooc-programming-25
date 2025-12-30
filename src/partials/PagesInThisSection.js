@@ -1,6 +1,7 @@
 import React, { Fragment } from "react"
 import PagesContext from "../contexes/PagesContext"
-import { normalizeExerciseId, nthIndex } from "../util/strings"
+import { getSectionPath, filterPagesByLanguage } from "../util/paths"
+import { normalizeExerciseId } from "../util/strings"
 import { Link } from "gatsby"
 import styled from "styled-components"
 import { withTranslation } from "react-i18next"
@@ -67,13 +68,9 @@ const PagesInThisSection = ({ style, t }) => (
   <PagesContext.Consumer>
     {(value) => {
       const currentPath = value.current.frontmatter.path
-      let sectionPath = currentPath
-      const sectionSeparator = nthIndex(currentPath, "/", 2)
-      if (sectionSeparator !== -1) {
-        sectionPath = currentPath.substr(0, sectionSeparator)
-      }
+      const sectionPath = getSectionPath(currentPath)
 
-      const sectionPages = value.all
+      const sectionPages = filterPagesByLanguage(value.all, currentPath)
         .filter((o) => o.path.startsWith(`${sectionPath}/`))
         .sort((a, b) => {
           a = a.path.toLowerCase()

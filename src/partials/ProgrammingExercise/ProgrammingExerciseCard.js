@@ -114,6 +114,7 @@ class ProgrammingExerciseCard extends React.Component {
     const {
       children,
       name,
+      anchor,
       awardedPoints,
       points,
       onRefresh,
@@ -121,10 +122,11 @@ class ProgrammingExerciseCard extends React.Component {
       completed,
       difficulty,
     } = this.props
+    const anchorKey = anchor || name
 
     return (
       <ProgrammingExerciseWrapper
-        id={normalizeExerciseId(`programming-exercise-${name}`)}
+        id={normalizeExerciseId(`programming-exercise-${anchorKey}`)}
       >
         <Header completed={completed}>
           <StyledIcon icon={icon} size="2x" />

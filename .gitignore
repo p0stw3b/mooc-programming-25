@@ -6,3 +6,13 @@ yarn-error.log
 # Build directory
 /public
 .DS_Store
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/codeStyles/Project.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/prettier.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
+/.xdg/gatsby/config.json
+.xdg/gatsby/sites/
+.xdg/configstore/
+.config

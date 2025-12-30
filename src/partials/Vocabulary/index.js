@@ -3,6 +3,7 @@ import PagesContext from "../../contexes/PagesContext"
 import withSimpleErrorBoundary from "../../util/withSimpleErrorBoundary"
 import styled from "styled-components"
 import Word from "./Word"
+import { filterPagesByLanguage } from "../../util/paths"
 
 const WordContainer = styled.div`
   margin: 1em 2em;
@@ -20,9 +21,11 @@ class Vocabulary extends React.Component {
 
   async componentDidMount() {
     const value = this.context
-    const words = value.all
-      .map((page) => page.words)
+    const currentPath = value.current?.frontmatter?.path || "/"
+    const words = filterPagesByLanguage(value.all, currentPath)
+      .map((page) => page.words || [])
       .flat()
+      .filter(Boolean)
       .sort((a, b) => a.name.localeCompare(b.name))
 
     let uniqueWords = []

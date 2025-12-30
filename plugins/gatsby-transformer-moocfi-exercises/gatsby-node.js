@@ -7,10 +7,10 @@ const crowdsorcererRegex = /<\s*crowdsorcerer\s*id\s*=\s*['"]\s*(\w+)\s*['"].*>/
 const programmingExerciseTagRegex = /<\s*programming-exercise\s+(.*)\s*>/gm
 const inBrowserProgrammingExerciseTagRegex = /<\s*in-browser-programming-exercise\s+(.*)\s*>/gm
 const programmingExerciseNameRegex = /\bname\s*=\s*(["].*?["]|['].*?['])/gm
+const programmingExerciseAnchorRegex = /\banchor\s*=\s*(["].*?["]|['].*?['])/gm
 const moodleRegex = /<\s*moodle-exercise\s*name\s*=\s*['"]\s*(.*)\s*['"]\s*>/gm
 const sqlTrainerRegex = /<\s*sqltrainer-exercise\s*name\s*=\s*['"]\s*(.*)\s*['"]\s*>/gm
 const commentRegex = /<!--.*?-->/mgs
-
 
 function getMatches(string, regex, index) {
   index || (index = 1) // default to the first capturing group
@@ -23,13 +23,25 @@ function getMatches(string, regex, index) {
   return matches
 }
 
-const ExerciseType = new GraphQLObjectType({
-  name: `Exercise`,
+const MoocfiExerciseType = new GraphQLObjectType({
+  name: `MoocfiExercise`,
   fields: {
     id: {
       type: GraphQLString,
       resolve(details) {
         return details.id
+      },
+    },
+    name: {
+      type: GraphQLString,
+      resolve(details) {
+        return details.name
+      },
+    },
+    anchor: {
+      type: GraphQLString,
+      resolve(details) {
+        return details.anchor
       },
     },
     type: {
@@ -51,7 +63,7 @@ exports.setFieldsOnGraphQLNodeType = ({ type }) => {
   if (type.name === `MarkdownRemark`) {
     return {
       moocfiExercises: {
-        type: GraphQLList(ExerciseType),
+        type: GraphQLList(MoocfiExerciseType),
         resolve: (node, _fieldArgs) => {
           // nuke commented text
           const source = (node.rawMarkdownBody || "").replace(commentRegex, "")
@@ -68,17 +80,28 @@ exports.setFieldsOnGraphQLNodeType = ({ type }) => {
             programmingExerciseTagRegex,
             1,
           ).map(res => {
-            let id = "unknown"
+            let name = "unknown"
+            let anchor = undefined
             try {
               const match = getMatches(
                 res.match,
                 programmingExerciseNameRegex,
                 1,
               )[0].match
-              id = match.substr(1, match.length - 2)
+              name = match.substr(1, match.length - 2)
+              const anchorMatch = getMatches(
+                res.match,
+                programmingExerciseAnchorRegex,
+                1,
+              )[0]?.match
+              if (typeof anchorMatch === "string") {
+                anchor = anchorMatch.substr(1, anchorMatch.length - 2)
+              }
             } catch (e) {}
             return {
-              id,
+              id: name,
+              name,
+              anchor: anchor ?? name,
               location: res.location,
               type: "programming-exercise",
               parentPagePath: node.frontmatter.path,
@@ -90,17 +113,28 @@ exports.setFieldsOnGraphQLNodeType = ({ type }) => {
             inBrowserProgrammingExerciseTagRegex,
             1,
           ).map(res => {
-            let id = "unknown"
+            let name = "unknown"
+            let anchor = undefined
             try {
               const match = getMatches(
                 res.match,
                 programmingExerciseNameRegex,
                 1,
               )[0].match
-              id = match.substr(1, match.length - 2)
+              name = match.substr(1, match.length - 2)
+              const anchorMatch = getMatches(
+                res.match,
+                programmingExerciseAnchorRegex,
+                1,
+              )[0]?.match
+              if (typeof anchorMatch === "string") {
+                anchor = anchorMatch.substr(1, anchorMatch.length - 2)
+              }
             } catch (e) {}
             return {
-              id,
+              id: name,
+              name,
+              anchor: anchor ?? name,
               location: res.location,
               type: "programming-exercise",
               parentPagePath: node.frontmatter.path,
@@ -121,6 +155,8 @@ exports.setFieldsOnGraphQLNodeType = ({ type }) => {
           const moodles = getMatches(source, moodleRegex, 1).map(res => {
             return {
               id: res.match,
+              name: res.match,
+              anchor: res.match,
               location: res.location,
               type: "moodle-exercise",
               parentPagePath: node.frontmatter.path,
@@ -131,6 +167,8 @@ exports.setFieldsOnGraphQLNodeType = ({ type }) => {
             res => {
               return {
                 id: res.match,
+                name: res.match,
+                anchor: res.match,
                 location: res.location,
                 type: "sqltrainer-exercise",
                 parentPagePath: node.frontmatter.path,

@@ -21,21 +21,22 @@ const ExerciseSummary = ({ exercise, index, quizIdToTitle, t }) => {
     }
   }
   if (exercise.type === "programming-exercise") {
-    description = `${t("programmingExercise")} ${exercise.id}`
+    description = `${t("programmingExercise")} ${exercise.name || exercise.id}`
   }
   if (exercise.type === "crowdsorcerer") {
     description = "Crowdsorcerer"
   }
   if (exercise.type === "moodle-exercise") {
-    description = `${t("moodleExercise")} ${exercise.id}`
+    description = `${t("moodleExercise")} ${exercise.name || exercise.id}`
   }
   if (exercise.type === "sqltrainer-exercise") {
-    description = `${t("sqlTrainerExercise")} ${exercise.id}`
+    description = `${t("sqlTrainerExercise")} ${exercise.name || exercise.id}`
   }
   if (exercise.type === "in-browser-programming-exercise") {
-    description = `${t("programmingExercise")} ${exercise.id}`
+    description = `${t("programmingExercise")} ${exercise.name || exercise.id}`
   }
-  let anchorLinkDigest = normalizeExerciseId(`${exercise.type}-${exercise.id}`)
+  const anchorKey = exercise.anchor || exercise.id
+  let anchorLinkDigest = normalizeExerciseId(`${exercise.type}-${anchorKey}`)
   return (
     <ExerciseSummaryWrapper
       to={`${exercise.parentPagePath}#${anchorLinkDigest}`}

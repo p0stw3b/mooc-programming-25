@@ -1,0 +1,10 @@
+{
+  "name": "gatsby-remark-heading-ids",
+  "version": "1.0.0",
+  "description": "Allows explicit heading ids via {#id} suffix.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
+

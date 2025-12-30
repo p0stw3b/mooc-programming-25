@@ -3,10 +3,13 @@ import styled from "styled-components"
 import { graphql, StaticQuery } from "gatsby"
 import { Button } from "@material-ui/core"
 import CourseSettings from "../../course-settings"
+import { useLocation } from "@reach/router"
+import { useTranslation } from "react-i18next"
 
 import Logo from "./Logo"
 import TreeView from "./TreeView"
 import withSimpleErrorBoundary from "../util/withSimpleErrorBoundary"
+import { hasRussianPrefix } from "../util/paths"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
@@ -115,11 +118,18 @@ const MobileWrapperOrFragment = (props) => {
 }
 
 const Sidebar = (props) => {
+  const { t } = useTranslation("common")
+  const location = useLocation()
+  const isRu = hasRussianPrefix(location?.pathname)
   let edges =
     props.data?.allMarkdownRemark?.edges.map((o) => o.node?.frontmatter) || []
   if (process.env.NODE_ENV === "production") {
     edges = edges.filter((o) => !o.hidden)
   }
+
+  edges = edges.filter((o) =>
+    isRu ? hasRussianPrefix(o.path) : !hasRussianPrefix(o.path),
+  )
 
   edges = edges
     .filter((o) => !o.hide_in_sidebar)
@@ -131,7 +141,8 @@ const Sidebar = (props) => {
     )
 
   let coursePartEdges = edges.filter(
-    (o) => !o.information_page && !o.course_info_page && !o.upcoming,
+    (o) =>
+      o.overview && !o.information_page && !o.course_info_page && !o.upcoming,
   )
 
   let informationPageEdges = edges
@@ -177,12 +188,12 @@ const Sidebar = (props) => {
           {props.mobileMenuOpen ? (
             <span>
               <StyledIcon icon={faTimes} />
-              Sulje valikko
+              {t("closeMenu")}
             </span>
           ) : (
             <span>
               <StyledIcon icon={faBars} />
-              Avaa valikko
+              {t("openMenu")}
             </span>
           )}
         </Button>
@@ -202,15 +213,13 @@ const Sidebar = (props) => {
 
 const query = graphql`
   query {
-    allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/index.md|data/[^/]+/*.md/" } }
-      sort: { fields: [frontmatter___path] }
-    ) {
+    allMarkdownRemark(sort: { fields: [frontmatter___path] }) {
       edges {
         node {
           id
           frontmatter {
             title
+            overview
             information_page
             course_info_page
             path

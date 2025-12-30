@@ -71,6 +71,7 @@ class InBrowserProgrammingExercisePartial extends React.Component {
     const {
       t,
       name,
+      anchor,
       tmcname,
       children,
       height,
@@ -96,6 +97,7 @@ class InBrowserProgrammingExercisePartial extends React.Component {
     return (
       <ProgrammingExerciseCard
         name={name}
+        anchor={anchor}
         points={details?.availablePoints}
         awardedPoints={details?.awardedPoints}
         allowRefresh={false}

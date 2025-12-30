@@ -82,10 +82,7 @@ export const pageQuery = graphql`
     allPages: allMarkdownRemark(
       sort: { order: ASC, fields: frontmatter___path }
       limit: 1000
-      filter: {
-        frontmatter: { hidden: { ne: true } }
-        vocabularyWords: { elemMatch: { name: { regex: "/.+/" } } }
-      }
+      filter: { frontmatter: { hidden: { ne: true } } }
     ) {
       edges {
         node {

@@ -6,9 +6,11 @@ import LoginStateContext, {
   withLoginStateContext,
 } from "../contexes/LoginStateContext"
 import Button from "./Button"
+import LanguageToggle from "./LanguageToggle"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChartLine as pointsIcon } from "@fortawesome/free-solid-svg-icons"
 import CourseSettings from "../../course-settings"
+import { withTranslation } from "react-i18next"
 
 const TopBarContainer = styled.div`
   height: 4rem;
@@ -30,10 +32,11 @@ class TopBar extends React.Component {
   render() {
     return (
       <TopBarContainer>
+        <LanguageToggle />
         {CourseSettings.useNewPointsVisualization && this.context.loggedIn && (
           <Button to="/progress">
             <StyledIcon icon={pointsIcon} />
-            Pisteet
+            {this.props.t("points")}
           </Button>
         )}
         <LoginControls />
@@ -42,4 +45,6 @@ class TopBar extends React.Component {
   }
 }
 
-export default withSimpleErrorBoundary(withLoginStateContext(TopBar))
+export default withTranslation("common")(
+  withSimpleErrorBoundary(withLoginStateContext(TopBar)),
+)

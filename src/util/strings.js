@@ -1,3 +1,5 @@
+import { stripRussianPrefix } from "./paths"
+
 export function nthIndex(str, pat, n) {
   var L = str.length,
     i = -1
@@ -10,6 +12,7 @@ export function nthIndex(str, pat, n) {
 
 export function extractPartNumberFromPath(string) {
   // Assumes path is formatted /part-[num] or /part-[num]/...
+  string = stripRussianPrefix(string)
   const subpartSeperator = nthIndex(string, "/", 2)
   if (subpartSeperator !== -1) {
     string = string.substring(0, subpartSeperator)
@@ -19,6 +22,7 @@ export function extractPartNumberFromPath(string) {
 
 export function extractSubpartNumberFromPath(string) {
   // Assumes path is formatted /part-[num]/[num]-...
+  string = stripRussianPrefix(string)
   return parseInt(
     string.substring(nthIndex(string, "/", 2) + 1, nthIndex(string, "-", 2)),
   )
@@ -46,15 +50,20 @@ export function improveGroupName(string) {
 }
 
 export function normalizeExerciseId(string) {
+  const input = String(string ?? "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/ö/g, "o")
+    .replace(/ä/g, "a")
+    .replace(/\s+/g, "-")
+
+  let nonIdentifierChars = /[^A-Za-z0-9_-]/g
+  try {
+    nonIdentifierChars = new RegExp("[^\\p{L}\\p{N}_-]", "gu")
+  } catch (e) {}
+
   return encodeURIComponent(
-    string
-      .toLowerCase()
-      .replace(/ö/g, "o")
-      .replace(/Ö/g, "O")
-      .replace(/ä/g, "a")
-      .replace(/Ä/g, "A")
-      .replace(/\s+/g, "-")
-      .replace(/[^A-Za-z0-9_-]/g, "")
-      .replace(/-+/g, "-"),
+    input.replace(nonIdentifierChars, "").replace(/-+/g, "-"),
   )
 }

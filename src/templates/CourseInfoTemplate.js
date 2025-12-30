@@ -86,6 +86,8 @@ export const pageQuery = graphql`
           }
           moocfiExercises {
             id
+            name
+            anchor
             type
             parentPagePath
           }

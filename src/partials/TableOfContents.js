@@ -18,9 +18,12 @@ class TableOfContents extends Component {
       document.querySelectorAll(
         "h1.material-header,h2.material-header,h3.material-header",
       ),
-    ).map((o) => {
-      return o.textContent || o.innerText
-    })
+    )
+      .map((o) => {
+        const title = (o.textContent || o.innerText || "").trim()
+        return { id: o.id, title }
+      })
+      .filter((o) => o.title.length > 0)
     this.setState({ data })
   }
 
@@ -33,8 +36,10 @@ class TableOfContents extends Component {
             <ol>
               {this.state.data.map((o) => {
                 return (
-                  <li key={o}>
-                    <a href={`#${normalizeExerciseId(o)}`}>{o}</a>
+                  <li key={o.id || o.title}>
+                    <a href={`#${o.id || normalizeExerciseId(o.title)}`}>
+                      {o.title}
+                    </a>
                   </li>
                 )
               })}

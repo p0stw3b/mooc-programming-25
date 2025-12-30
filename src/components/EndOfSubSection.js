@@ -1,7 +1,7 @@
 import React, { Fragment } from "react"
 import styled from "styled-components"
 import PagesContext from "../contexes/PagesContext"
-import { nthIndex } from "../util/strings"
+import { filterPagesByLanguage, getSectionPath } from "../util/paths"
 import { Link } from "gatsby"
 import { withTranslation } from "react-i18next"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -45,12 +45,8 @@ class EndOfSubSection extends React.Component {
       <PagesContext.Consumer>
         {(value) => {
           const currentPath = value.current.frontmatter.path
-          let sectionPath = currentPath
-          const sectionSeparator = nthIndex(currentPath, "/", 2)
-          if (sectionSeparator !== -1) {
-            sectionPath = currentPath.substr(0, sectionSeparator)
-          }
-          const sectionPages = value.all
+          const sectionPath = getSectionPath(currentPath)
+          const sectionPages = filterPagesByLanguage(value.all, currentPath)
             .filter((o) => o.path.startsWith(`${sectionPath}/`))
             .sort((a, b) => {
               a = a.path.toLowerCase()

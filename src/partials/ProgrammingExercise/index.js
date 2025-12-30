@@ -116,7 +116,7 @@ class ProgrammingExercise extends React.Component {
   }
 
   render() {
-    const { children, name, difficulty } = this.props
+    const { children, name, anchor, difficulty } = this.props
 
     if (!this.state.render) {
       return <div>Loading</div>
@@ -132,6 +132,7 @@ class ProgrammingExercise extends React.Component {
     return (
       <ProgrammingExerciseCard
         name={name}
+        anchor={anchor}
         points={points}
         awardedPoints={awardedPoints}
         onRefresh={this.onUpdate}

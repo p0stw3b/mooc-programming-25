@@ -7,6 +7,9 @@ import userEN from "./locales/user/en"
 import commonFI from "./locales/common/fi"
 import pointsBalloonFI from "./locales/pointsBalloon/fi"
 import userFI from "./locales/user/fi"
+import commonRU from "./locales/common/ru"
+import pointsBalloonRU from "./locales/pointsBalloon/ru"
+import userRU from "./locales/user/ru"
 
 const resources = {
   en: {
@@ -19,12 +22,18 @@ const resources = {
     "points-balloon": pointsBalloonFI,
     user: userFI,
   },
+  ru: {
+    common: commonRU,
+    "points-balloon": pointsBalloonRU,
+    user: userRU,
+  },
 }
 
 i18n.use(initReactI18next).init({
   resources,
   ns: ["common", "user", "points-balloon"],
   defaultNS: "common",
+  fallbackLng: "en",
   react: {
     wait: true,
   },

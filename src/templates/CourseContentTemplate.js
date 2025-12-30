@@ -19,6 +19,7 @@ import Container from "../components/Container"
 
 import { loggedIn } from "../services/moocfi"
 import { capitalizeFirstLetter } from "../util/strings"
+import { getSectionPath, stripRussianPrefix } from "../util/paths"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowCircleUp as icon } from "@fortawesome/free-solid-svg-icons"
 import EndOfSubSection from "../components/EndOfSubSection"
@@ -84,10 +85,15 @@ export default class CourseContentTemplate extends React.Component {
       components: partials,
     }).Compiler
 
-    const parentSectionName = capitalizeFirstLetter(
-      `${frontmatter.path.split(/\//g)[1].replace(/-/g, " ")}`,
-    )
-    const parentSectionPath = `/${frontmatter.path.split(/\//g)[1]}`
+    const parentSectionPath = getSectionPath(frontmatter.path)
+    const parentSectionTitle =
+      allPages.find((page) => page.path === parentSectionPath)?.title ||
+      capitalizeFirstLetter(
+        `${stripRussianPrefix(parentSectionPath)
+          .split("/")
+          .filter(Boolean)[0]
+          ?.replace(/-/g, " ")}`,
+      )
 
     const filePath = data.page.fileAbsolutePath.substring(
       data.page.fileAbsolutePath.lastIndexOf("/data/"),
@@ -109,7 +115,7 @@ export default class CourseContentTemplate extends React.Component {
                   <ContentWrapper>
                     <UpLink to={parentSectionPath}>
                       <StyledIcon icon={icon} />
-                      {parentSectionName}
+                      {parentSectionTitle}
                     </UpLink>
                     <h1>{frontmatter.title}</h1>
                     {renderAst(htmlAst)}

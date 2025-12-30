@@ -20,6 +20,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import Footer from "../components/Footer"
 import PointsBalloon from "../components/PointsBalloon"
+import LanguageSync from "../components/LanguageSync"
 import {
   MEDIUM_SIDEBAR_WIDTH,
   LARGE_SIDEBAR_WIDTH,
@@ -106,6 +107,7 @@ class Layout extends React.Component {
     return (
       <Fragment>
         {" "}
+        <LanguageSync />
         <StaticQuery
           query={layoutQuery}
           render={(data) => {

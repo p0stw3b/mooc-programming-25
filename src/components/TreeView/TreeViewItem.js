@@ -14,6 +14,7 @@ import Divider from "@material-ui/core/Divider"
 
 import { faUnlockAlt as icon } from "@fortawesome/free-solid-svg-icons"
 import withSimpleErrorBoundary from "../../util/withSimpleErrorBoundary"
+import { RUSSIAN_PREFIX, stripGatsbyPathPrefix } from "../../util/paths"
 
 const ChildrenList = styled.ul`
   height: calc(var(--open-ratio) * var(--calculated-height) * 1px);
@@ -121,6 +122,32 @@ const Centered = styled.div`
   margin-bottom: 0.5rem;
 `
 
+function normalizePathname(pathname) {
+  pathname = stripGatsbyPathPrefix(pathname)
+  if (typeof pathname !== "string") {
+    return pathname
+  }
+  if (pathname.length > 1) {
+    return pathname.replace(/\/+$/, "")
+  }
+  return pathname
+}
+
+function isActivePath(currentPathname, itemPathname) {
+  const current = normalizePathname(currentPathname)
+  const item = normalizePathname(itemPathname)
+
+  if (typeof current !== "string" || typeof item !== "string") {
+    return false
+  }
+
+  if (item === "/" || item === RUSSIAN_PREFIX) {
+    return current === item
+  }
+
+  return current === item || current.startsWith(`${item}/`)
+}
+
 class TreeViewItem extends React.Component {
   constructor(props) {
     super(props)
@@ -154,12 +181,7 @@ class TreeViewItem extends React.Component {
       <React.Fragment>
         <Location>
           {({ navigate, location }) => {
-            let active =
-              location.pathname === this.props.item.path ||
-              location.pathname.includes(this.props.item.path + "/")
-            if (this.props.item.path === "/") {
-              active = location.pathname === this.props.item.path
-            }
+            const active = isActivePath(location.pathname, this.props.item.path)
             return (
               <Motion
                 style={{

@@ -1,6 +1,6 @@
 import React from "react"
 import PagesContext from "../../contexes/PagesContext"
-import { nthIndex } from "../../util/strings"
+import { filterPagesByLanguage, getSectionPath } from "../../util/paths"
 import styled from "styled-components"
 import withSimpleErrorBoundary from "../../util/withSimpleErrorBoundary"
 import ExerciseSummary from "./ExerciseSummary"
@@ -27,13 +27,9 @@ class ExerciseList extends React.Component {
   async componentDidMount() {
     const value = this.context
     const currentPath = value.current.frontmatter.path
-    let sectionPath = currentPath
-    const sectionSeparator = nthIndex(currentPath, "/", 2)
-    if (sectionSeparator !== -1) {
-      sectionPath = currentPath.substr(0, sectionSeparator)
-    }
+    const sectionPath = getSectionPath(currentPath)
 
-    const sectionPages = value.all
+    const sectionPages = filterPagesByLanguage(value.all, currentPath)
       .filter((o) => o.path.startsWith(`${sectionPath}/`))
       .sort((a, b) => {
         a = a.path.toLowerCase()

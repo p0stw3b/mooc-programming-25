@@ -17,6 +17,8 @@
     "mailingListTitle":"Muistuta minua kun kurssi alkaa",
     "subscribe":"tilaa",
     "tableOfContents":"Sisällysluettelo",
+    "openMenu":"Avaa valikko",
+    "closeMenu":"Sulje valikko",
     "sampleOutput":"Esimerkkitulostus",
     "sampleData":"Esimerkkidata",
     "loginToSeeExercise":"Kirjaudu sisään nähdäksesi tehtävän.",

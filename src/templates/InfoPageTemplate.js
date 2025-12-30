@@ -20,6 +20,7 @@ export default class InfoPageTemplate extends React.Component {
   render() {
     const { data } = this.props
     const { frontmatter, htmlAst } = data.page
+    const allPages = data.allPages?.edges.map((o) => o.node?.frontmatter) || []
     const partials = getNamedPartials()
     const renderAst = new rehypeReact({
       createElement: React.createElement,
@@ -35,6 +36,7 @@ export default class InfoPageTemplate extends React.Component {
         <Helmet title={frontmatter.title} />
         <PagesContext.Provider
           value={{
+            all: allPages,
             current: { frontmatter: frontmatter, filePath: filePath },
           }}
         >
@@ -68,6 +70,17 @@ export const pageQuery = graphql`
         banner
       }
       fileAbsolutePath
+    }
+    allPages: allMarkdownRemark {
+      edges {
+        node {
+          id
+          frontmatter {
+            path
+            title
+          }
+        }
+      }
     }
   }
 `

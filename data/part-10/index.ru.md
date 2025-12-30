@@ -1,0 +1,10 @@
+---
+path: /ru/part-10
+title: Часть 10
+overview: true
+hidden: false
+---
+
+<pages-in-this-section></pages-in-this-section>
+
+<exercises-in-this-section></exercises-in-this-section>
